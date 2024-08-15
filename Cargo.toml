@@ -1,0 +1,12 @@
+[package]
+name = "chirp-generator"
+version = "0.1.0"
+edition = "2021"
+description = "Interface to generate linear/exponential frequency sine sweeps (chirps)"
+repository = "https://github.com/jahndan/chirp-generator"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+clap = { version = "4.5.15", features = ["color", "derive"] }
+wavers = "1.4.3"
