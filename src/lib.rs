@@ -80,6 +80,34 @@ pub fn exponential_chirp(begin: f32, end: f32, samples: usize, rate: u32) -> Vec
     signal
 }
 
+pub fn hyperbolic_chirp(begin: f32, end: f32, samples: usize, rate: u32) -> Vec<f32> {
+    assert!(
+        begin.is_sign_positive(),
+        "Starting frequency of exponential chirp cannot be negative!"
+    );
+
+    // the solved differential equation for phase: (in samples instead of time)
+    // $$\phi(i) = \phi_0 - \frac{2\pi}{rate} \frac{f_0 f_1 N}{f_1 - f_0} \ln\(1 - i \frac{f_1 - f_0}{f_1 N})$$
+
+    // initialize vector with needed size (no reallocation needed)
+    let mut signal = vec![0.0; samples];
+    // variables necessary
+    let scale: f32 = consts::TAU / rate as f32;
+    let outer: f32 = scale * (begin * end * samples as f32) / (end - begin);
+    let inner: f32 = (end - begin) / (end * samples as f32);
+
+    // reassign the samples to actual values
+    for (i, sample) in signal.iter_mut().enumerate() {
+        // calculate phase
+        let mut phi = -outer * (1 - inner * i).ln();
+        // set sample value based on phase
+        *sample = phi.cos();
+    }
+
+    signal
+}
+
+
 //// writing
 
 use wavers::{self, WaversResult};
